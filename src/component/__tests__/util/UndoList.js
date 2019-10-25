@@ -104,6 +104,17 @@ describe('UndoList组件', () => {
     InputEle.simulate('blur');
     expect(fn).toHaveBeenLastCalledWith(1);
   });
+
+  it('列表项前面有个checkbox选择框', () => {
+    const list = [
+      { status: 'div',value: 1 },
+      { status: 'input',value: 2 },
+      { status: 'div',value: 3 }
+    ];
+    const wrapper = shallow(<UndoList list={list} />);
+    const InputEle = testUtil(wrapper, 'undo-item-checkbox');
+    expect(InputEle.length).toBe(3);
+  });
 });
 
 

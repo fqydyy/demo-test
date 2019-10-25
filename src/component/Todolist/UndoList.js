@@ -20,6 +20,7 @@ class UndoList extends React.Component {
                 data-test="undo-item"
                 onClick={() => changeStatus(index)}
                 >
+                <input type="checkbox" data-test="undo-item-checkbox" />
                 {
                   item.status === 'div' ? item.value : 
                   <input 
