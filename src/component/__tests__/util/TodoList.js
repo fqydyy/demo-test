@@ -2,6 +2,7 @@ import React from 'react';
 import { shallow } from 'enzyme';
 import Todolist from '../../Todolist';
 import UndoList from '../../Todolist/UndoList';
+import { exec } from 'child_process';
 
 describe('TodoList组件', () => {
   it('存在一个undoList, 初始值为空', () => {
@@ -28,7 +29,7 @@ describe('TodoList组件', () => {
     });
   });
 
-  it('UndoList组件应该传递list和deleteItem, changeStatus, changeValue, handleInputBlur参数', () => {
+  it('UndoList组件应该传递list和deleteItem, changeStatus, changeValue, handleInputBlur, changeTaskToDone参数', () => {
     const wrapper = shallow(<Todolist />);
     const undoList = wrapper.find(UndoList);
     expect(undoList.prop('list')).toBeTruthy();
@@ -36,6 +37,7 @@ describe('TodoList组件', () => {
     expect(undoList.prop('changeStatus')).toBeTruthy();
     expect(undoList.prop('changeValue')).toBeTruthy();
     expect(undoList.prop('handleInputBlur')).toBeTruthy();
+    expect(undoList.prop('changeTaskToDone')).toBeTruthy();
   });
 
   it('deleteItem 调用，list的内容应该减少', () => {
@@ -107,8 +109,55 @@ describe('TodoList组件', () => {
       value: 2
     }, list[2]]);
   });
+ 
+  it('给DoneList组件传递一个donelist的参数, 初始值为空, 还需要传递changeTaskToDo事件', () => {
+    const wrapper = shallow(<Todolist />);
+    const doneListComp = wrapper.find('DoneList');
+    expect(doneListComp.prop('doneList')).toBeTruthy();
+    expect(wrapper.state('doneList')).toEqual([]);
+    expect(doneListComp.prop('changeTaskToDo')).toBeTruthy();
+  });
 
+  it('changeTaskToDone触发时, 任务从未完成列表移除，添加到已完成列表中', () => {
+    const undoList = [
+      { status: 'div', value: 111 },
+      { status: 'div', value: 222 },
+      { status: 'div', value: 333 }
+    ]
+    const doneList = [];
+    const wrapper = shallow(<Todolist />);
+    wrapper.setState({
+      undoList,
+      doneList
+    })
+    const { changeTaskToDone } = wrapper.instance();
+    changeTaskToDone(1);
+    expect(wrapper.state('undoList').length).toBe(2);
+    expect(wrapper.state('undoList')).toEqual([undoList[0], undoList[2]]);
+    expect(wrapper.state('doneList').length).toBe(1);
+    expect(wrapper.state('doneList')).toEqual([undoList[1]]);
+  });
 
+  it('changeTaskToDo触发时, 任务从已完成列表移除，添加到未完成列表中', () => {
+    const undoList = [
+      { status: 'div', value: 222 }
+    ]
+    const doneList = [
+      { status: 'div', value: 111 },
+      { status: 'div', value: 333 }
+    ];
+    const wrapper = shallow(<Todolist />);
+    wrapper.setState({
+      undoList,
+      doneList
+    })
+    const { changeTaskToDo } = wrapper.instance();
+    changeTaskToDo(1);
+    expect(wrapper.state('undoList').length).toBe(2);
+    expect(wrapper.state('undoList')).toEqual([undoList[0], doneList[1]]);
+    expect(wrapper.state('doneList').length).toBe(1);
+    expect(wrapper.state('doneList')).toEqual([doneList[0]]);
+  });
 });
 
 

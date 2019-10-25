@@ -3,7 +3,9 @@ import React from 'react';
 class UndoList extends React.Component {
 
   render() {
-    const { list, deleteItem, changeStatus, changeValue, handleInputBlur } = this.props;
+    const { 
+      list, deleteItem, changeStatus, changeValue, handleInputBlur, changeTaskToDone
+    } = this.props;
     return (
       <div className="undo-list-container">
         <div className="undo-list-title">
@@ -20,7 +22,16 @@ class UndoList extends React.Component {
                 data-test="undo-item"
                 onClick={() => changeStatus(index)}
                 >
-                <input type="checkbox" data-test="undo-item-checkbox" />
+                <input 
+                  type="checkbox" 
+                  data-test="undo-item-checkbox"
+                  className="item-checkbox"
+                  checked={false}
+                  onChange={(e) => {
+                    e.stopPropagation();
+                    changeTaskToDone(index);
+                  }}
+                 />
                 {
                   item.status === 'div' ? item.value : 
                   <input 

@@ -105,7 +105,7 @@ describe('UndoList组件', () => {
     expect(fn).toHaveBeenLastCalledWith(1);
   });
 
-  it('列表项前面有个checkbox选择框', () => {
+  it('列表项前面有个checkbox选择框, 且状态是未选中的状态', () => {
     const list = [
       { status: 'div',value: 1 },
       { status: 'input',value: 2 },
@@ -114,6 +114,22 @@ describe('UndoList组件', () => {
     const wrapper = shallow(<UndoList list={list} />);
     const InputEle = testUtil(wrapper, 'undo-item-checkbox');
     expect(InputEle.length).toBe(3);
+    expect(InputEle.at(0).prop('checked')).toBeFalsy();
+  });
+
+  it('列表项点击checkbox选择框, 触发changeTaskToDone事件, 将选项移出undoList列表', () => {
+    const list = [
+      { status: 'div',value: 1 },
+      { status: 'div',value: 2 },
+      { status: 'div',value: 3 }
+    ];
+    const fn = jest.fn();
+    const wrapper = shallow(<UndoList list={list} changeTaskToDone={fn} />);
+    const InputEle = testUtil(wrapper, 'undo-item-checkbox');
+    InputEle.at(1).simulate('change', {
+      stopPropagation: () => {}
+    });
+    expect(fn).toHaveBeenLastCalledWith(1);
   });
 });
 
