@@ -75,3 +75,10 @@ body {
   outline: none;
   text-indent: 10px;
 }
+.item-checkbox {
+  margin-right: 10px;
+  width: 18px;
+  height: 18px;
+  position: relative;
+  top: 2px;
+}

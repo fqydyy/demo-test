@@ -1,6 +1,7 @@
 import React from 'react';
 import Header from './Header';
 import UndoList from './UndoList';
+import DoneList from './DoneList';
 import './style.css';
 
 
@@ -8,7 +9,8 @@ class TodoList extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      undoList: []
+      undoList: [],
+      doneList: []
     }
   }
   addUndoItem = (value) => {
@@ -74,8 +76,24 @@ class TodoList extends React.Component {
       undoList: newList
     })
   }
+  changeTaskToDone = (index) => {
+    const newUndoList = [...this.state.undoList];
+    const task = newUndoList.splice(index, 1);
+    this.setState({
+      undoList: newUndoList,
+      doneList: [...this.state.doneList, ...task]
+    })
+  }
+  changeTaskToDo = (index) => {
+    const newdoneList = [...this.state.doneList];
+    const task = newdoneList.splice(index, 1);
+    this.setState({
+      undoList: [...this.state.undoList, ...task],
+      doneList: newdoneList
+    })
+  }
   render() {
-    const { undoList } = this.state;
+    const { undoList, doneList } = this.state;
     return (
       <div>
         <Header addUndoItem={this.addUndoItem} />
@@ -85,7 +103,9 @@ class TodoList extends React.Component {
           changeStatus={this.changeStatus}
           changeValue={this.changeValue}
           handleInputBlur={this.handleInputBlur}
+          changeTaskToDone={this.changeTaskToDone}
         />
+        <DoneList doneList={doneList} changeTaskToDo={this.changeTaskToDo}/>
       </div>
     )
   }
